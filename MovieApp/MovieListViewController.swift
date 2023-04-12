@@ -30,6 +30,14 @@ class MovieListViewController: UIViewController {
         }
     }
     
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+
+    override var shouldAutorotate: Bool {
+        return true
+    }
+    
 }
 
 class MyCollectionViewCell: UICollectionViewCell {

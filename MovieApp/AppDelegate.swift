@@ -22,8 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func presentLogInViewController() {
         window = UIWindow(frame: UIScreen.main.bounds)
-        let viewController = MovieListViewController()
-        //let viewController = MovieCategoriesViewController()
+        //let viewController = MovieListViewController()
+        let viewController = MovieCategoriesViewController()
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
     }
