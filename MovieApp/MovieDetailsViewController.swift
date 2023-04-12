@@ -162,7 +162,7 @@ private func categoriesToString(categories:[MovieCategoryModel]) -> String {
         return String()
     }
     
-    var length = s.count
+    let length = s.count
     
     for i in 0...length {
         s.append(categories[i].category)
@@ -175,8 +175,8 @@ private func categoriesToString(categories:[MovieCategoryModel]) -> String {
 }
 
 private func lengthIntToString(length: Int) -> String{
-    var hours = length / 60
-    var minutes = length % 60
+    let hours = length / 60
+    let minutes = length % 60
     
     return String(format: " %dh %dm", arguments: [hours, minutes])
 }
@@ -238,7 +238,6 @@ extension UIImageView {
 }
 
 extension NSMutableAttributedString {
-    //var fontSize:CGFloat { return 14 }
     
     func bold(_ value:String, fontSize size: CGFloat) -> NSMutableAttributedString {
         

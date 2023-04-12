@@ -16,6 +16,8 @@
 		D2D94E6F29CCE197006039D4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2D94E6D29CCE197006039D4 /* LaunchScreen.storyboard */; };
 		D2D94E7829CCE237006039D4 /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = D2D94E7729CCE237006039D4 /* PureLayout */; };
 		D2D94E7B29CCE298006039D4 /* MovieAppData in Frameworks */ = {isa = PBXBuildFile; productRef = D2D94E7A29CCE298006039D4 /* MovieAppData */; };
+		D2FA75F529E5AB150091D88C /* MovieListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2FA75F429E5AB150091D88C /* MovieListViewController.swift */; };
+		D2FA75F729E5ABDE0091D88C /* MovieCategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2FA75F629E5ABDE0091D88C /* MovieCategoriesViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		D2D94E6B29CCE197006039D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D2D94E6E29CCE197006039D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D2D94E7029CCE197006039D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2FA75F429E5AB150091D88C /* MovieListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListViewController.swift; sourceTree = "<group>"; };
+		D2FA75F629E5ABDE0091D88C /* MovieCategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCategoriesViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +74,8 @@
 				D2D94E7029CCE197006039D4 /* Info.plist */,
 				D2847C4229D831DE0051A32D /* LoginViewController.swift */,
 				D2847C4429D8DCBC0051A32D /* MovieDetailsViewController.swift */,
+				D2FA75F429E5AB150091D88C /* MovieListViewController.swift */,
+				D2FA75F629E5ABDE0091D88C /* MovieCategoriesViewController.swift */,
 			);
 			path = MovieApp;
 			sourceTree = "<group>";
@@ -154,9 +160,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				D2847C4529D8DCBC0051A32D /* MovieDetailsViewController.swift in Sources */,
+				D2FA75F529E5AB150091D88C /* MovieListViewController.swift in Sources */,
 				D2847C4329D831DE0051A32D /* LoginViewController.swift in Sources */,
 				D2D94E6329CCE197006039D4 /* AppDelegate.swift in Sources */,
 				D2D94E6529CCE197006039D4 /* SceneDelegate.swift in Sources */,
+				D2FA75F729E5ABDE0091D88C /* MovieCategoriesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,7 +395,7 @@
 			repositoryURL = "https://github.com/fiveagency/MovieAppData";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
+				minimumVersion = 2.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
