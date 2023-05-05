@@ -24,7 +24,6 @@ class MovieDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         movieDetails = MovieUseCase().getDetails(id: 111161)
         
         createViews()
@@ -60,6 +59,8 @@ class MovieDetailsViewController: UIViewController {
     }
     
     private func customizeViews() {
+        
+        view.backgroundColor = .white
         
         movieImageView.load(url: URL(string: movieDetails.imageUrl)!)
         movieImageView.contentMode = .scaleAspectFill
@@ -184,17 +185,15 @@ private func lengthIntToString(length: Int) -> String{
 extension MovieDetailsViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let movieDetails = MovieUseCase().getDetails(id: 111161)
         return movieDetails?.crewMembers.count ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let movieDetails = MovieUseCase().getDetails(id: 111161)
-        let crewName = movieDetails?.crewMembers[indexPath.row].name
-        let crewRole = movieDetails?.crewMembers[indexPath.row].role
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: crewName!, for: indexPath) as! crewViewCell
-        cell.nameLabel.attributedText = NSMutableAttributedString().bold(crewName!, fontSize: 18)
-        cell.roleLabel.attributedText = NSMutableAttributedString().normal(crewRole!, fontSize: 18)
+        let crewName = movieDetails?.crewMembers[indexPath.row].name ?? "Loading..."
+        let crewRole = movieDetails?.crewMembers[indexPath.row].role ?? "Loading..."
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: crewName, for: indexPath) as! crewViewCell
+        cell.nameLabel.attributedText = NSMutableAttributedString().bold(crewName, fontSize: 18)
+        cell.roleLabel.attributedText = NSMutableAttributedString().normal(crewRole, fontSize: 18)
         return cell
     }
 }

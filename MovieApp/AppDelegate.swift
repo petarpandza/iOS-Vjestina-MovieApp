@@ -15,15 +15,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        presentLogInViewController()
+        presentViewController()
         
         return true
     }
     
-    private func presentLogInViewController() {
+    private func presentViewController() {
         window = UIWindow(frame: UIScreen.main.bounds)
-        //let viewController = MovieListViewController()
-        let viewController = MovieCategoriesViewController()
+        let viewController = MovieListViewController()
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
     }

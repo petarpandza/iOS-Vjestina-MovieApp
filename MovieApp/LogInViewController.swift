@@ -52,8 +52,8 @@ class LoginViewController: UIViewController {
         screenWidth = view.frame.width
 
         
-        signInLabel = UILabel(frame: CGRect(x: 0, y: screenHeight*0.15, width: screenWidth, height: 35))
-        emailAdressLabel = UILabel(frame: CGRect(x: screenWidth*0.05, y: screenHeight*0.25, width: screenWidth*0.9, height: 20))
+        signInLabel = UILabel()
+        emailAdressLabel = UILabel()
         usernameField = UITextField()
         passwordLabel = UILabel()
         passwordField = UITextField()
@@ -77,7 +77,7 @@ class LoginViewController: UIViewController {
         usernameField.backgroundColor = textFieldColor
         usernameField.layer.cornerRadius = 10
         usernameField.attributedPlaceholder = NSAttributedString(string: " ex. Matt@ioscourse.com", attributes:[NSAttributedString.Key.foregroundColor: buttonColor])
-        usernameField.font = UIFont.systemFont(ofSize: 24)
+        usernameField.font = UIFont.systemFont(ofSize: 16)
         usernameField.textColor = .white
         usernameField.layer.borderWidth = 0.4
         usernameField.layer.borderColor = buttonColor.cgColor
@@ -91,7 +91,7 @@ class LoginViewController: UIViewController {
         passwordField.backgroundColor = textFieldColor
         passwordField.layer.cornerRadius = 10
         passwordField.attributedPlaceholder = NSAttributedString(string: " Enter your password", attributes:[NSAttributedString.Key.foregroundColor: buttonColor])
-        passwordField.font = UIFont.systemFont(ofSize: 24)
+        passwordField.font = UIFont.systemFont(ofSize: 16)
         passwordField.textColor = .white
         passwordField.isSecureTextEntry = true
         passwordField.layer.borderWidth = 0.4
@@ -108,6 +108,17 @@ class LoginViewController: UIViewController {
     }
     
     private func defineViewLayout() {
+        
+        signInLabel.autoSetDimension(.height, toSize: 35)
+        signInLabel.autoSetDimension(.width, toSize: screenWidth)
+        signInLabel.autoPinEdge(toSuperviewEdge: .top, withInset: screenWidth*0.15)
+        
+        
+        emailAdressLabel.autoSetDimension(.height, toSize: 20)
+        emailAdressLabel.autoSetDimension(.width, toSize: screenWidth*0.9)
+        emailAdressLabel.autoPinEdge(toSuperviewEdge: .top, withInset: screenHeight*0.25)
+        emailAdressLabel.autoPinEdge(toSuperviewEdge: .leading, withInset: screenWidth*0.05)
+        
         
         usernameField.autoSetDimension(.height, toSize: 40)
         usernameField.autoMatch(.width, to: .width, of: emailAdressLabel)
