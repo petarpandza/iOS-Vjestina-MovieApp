@@ -3,7 +3,7 @@ import UIKit
 import PureLayout
 import MovieAppData
 
-class MovieCategoriesViewController: UIViewController {
+class MovieCategoriesListViewController: UIViewController {
     
     var mainScrollView: UIScrollView!
     
@@ -25,13 +25,24 @@ class MovieCategoriesViewController: UIViewController {
     private var freeToWatchLabel: UILabel!
     private var trendingLabel: UILabel!
     
+    var coordinator: MovieListCoordinator!
+        
+    func userDidSelect(movie: MovieModel) {
+        coordinator.showMovieDetails(for: movie)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         createViews()
         customizeViews()
+        defineViewLayout()
         registerCollectionViews()
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.parent?.title = "Movie List"
     }
     
     private func createViews() {
@@ -85,62 +96,80 @@ class MovieCategoriesViewController: UIViewController {
         
         view.backgroundColor = .white
         
+        
+        whatsPopularLabel.attributedText = NSMutableAttributedString().bold("What's popular", fontSize: 20)
+        
+        popularCollectionView.delegate = self
+        popularCollectionView.dataSource = popularCollectionViewDataSource
+        popularCollectionView.tag = 1
+        
+        freeToWatchLabel.attributedText = NSMutableAttributedString().bold("Free to Watch", fontSize: 20)
+        
+        freeCollectionView.delegate = self
+        freeCollectionView.dataSource = freeCollectionViewDataSource
+        freeCollectionView.tag = 2
+        
+        trendingLabel.attributedText = NSMutableAttributedString().bold("Trending", fontSize: 20)
+        
+        trendingCollectionView.delegate = self
+        trendingCollectionView.dataSource = trendingCollectionViewDataSource
+        trendingCollectionView.tag = 3
+        
+        
+    }
+    
+    private func defineViewLayout() {
+        
         mainScrollView.autoPinEdgesToSuperviewSafeArea()
         
         whatsPopularLabel.autoSetDimension(.width, toSize: 363)
         whatsPopularLabel.autoSetDimension(.height, toSize: 25)
         whatsPopularLabel.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
         whatsPopularLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 30)
-        whatsPopularLabel.attributedText = NSMutableAttributedString().bold("What's popular", fontSize: 20)
         
         popularCollectionView.autoPinEdge(.leading, to: .leading, of: whatsPopularLabel, withOffset: 0)
         popularCollectionView.autoPinEdge(.top, to: .bottom, of: whatsPopularLabel, withOffset: -15)
         popularCollectionView.autoSetDimension(.height, toSize: 220)
         popularCollectionView.autoPinEdge(.trailing, to: .trailing, of: view)
-        popularCollectionView.delegate = self
-        popularCollectionView.dataSource = popularCollectionViewDataSource
         
         freeToWatchLabel.autoMatch(.width, to: .width, of: whatsPopularLabel)
         freeToWatchLabel.autoMatch(.height, to: .height, of: whatsPopularLabel)
         freeToWatchLabel.autoPinEdge(.leading, to: .leading, of: whatsPopularLabel)
         freeToWatchLabel.autoPinEdge(.top, to: .bottom, of: popularCollectionView, withOffset: 25)
-        freeToWatchLabel.attributedText = NSMutableAttributedString().bold("Free to Watch", fontSize: 20)
         
         freeCollectionView.autoPinEdge(.leading, to: .leading, of: whatsPopularLabel, withOffset: 0)
         freeCollectionView.autoPinEdge(.top, to: .bottom, of: freeToWatchLabel, withOffset: -15)
         freeCollectionView.autoSetDimension(.height, toSize: 220)
         freeCollectionView.autoPinEdge(.trailing, to: .trailing, of: view)
-        freeCollectionView.delegate = self
-        freeCollectionView.dataSource = freeCollectionViewDataSource
         
         trendingLabel.autoMatch(.width, to: .width, of: whatsPopularLabel)
         trendingLabel.autoMatch(.height, to: .height, of: whatsPopularLabel)
         trendingLabel.autoPinEdge(.leading, to: .leading, of: whatsPopularLabel)
         trendingLabel.autoPinEdge(.top, to: .bottom, of: freeCollectionView, withOffset: 25)
-        trendingLabel.attributedText = NSMutableAttributedString().bold("Trending", fontSize: 20)
         
         trendingCollectionView.autoPinEdge(.leading, to: .leading, of: whatsPopularLabel, withOffset: 0)
         trendingCollectionView.autoPinEdge(.top, to: .bottom, of: trendingLabel, withOffset: -15)
         trendingCollectionView.autoSetDimension(.height, toSize: 220)
         trendingCollectionView.autoPinEdge(.trailing, to: .trailing, of: view)
-        trendingCollectionView.delegate = self
-        trendingCollectionView.dataSource = trendingCollectionViewDataSource
+        
+        // TODO
+        mainScrollView.contentSize = CGSize(width: view.bounds.width, height: trendingCollectionView.frame.maxY + 20)
         
     }
     
     private func registerCollectionViews() {
 
         for popularMovie in movieDetails.popularMovies{
-            popularCollectionView.register(MovieCategoriesViewCell.self, forCellWithReuseIdentifier: popularMovie.name)
+            popularCollectionView.register(MovieCategoriesListViewCell.self, forCellWithReuseIdentifier: popularMovie.name)
         }
  
         
         for freeMovie in movieDetails.freeToWatchMovies{
-            freeCollectionView.register(MovieCategoriesViewCell.self, forCellWithReuseIdentifier: freeMovie.name)
+            freeCollectionView.register(MovieCategoriesListViewCell.self, forCellWithReuseIdentifier: freeMovie.name)
         }
         
         for trendingMovie in movieDetails.trendingMovies{
-            trendingCollectionView.register(MovieCategoriesViewCell.self, forCellWithReuseIdentifier: trendingMovie.name)
+            trendingCollectionView.register(MovieCategoriesListViewCell.self, forCellWithReuseIdentifier: trendingMovie.name)
         }
         
     }
@@ -155,6 +184,23 @@ class MovieCategoriesViewController: UIViewController {
     
 }
 
-extension MovieCategoriesViewController: UICollectionViewDelegate {
 
+extension MovieCategoriesListViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        switch collectionView.tag {
+            
+        case 1:
+            let movie = MovieUseCase().popularMovies[indexPath.row]
+            userDidSelect(movie: movie)
+        case 2:
+            let movie = MovieUseCase().freeToWatchMovies[indexPath.row]
+            userDidSelect(movie: movie)
+        case 3:
+            let movie = MovieUseCase().trendingMovies[indexPath.row]
+            userDidSelect(movie: movie)
+        default:
+            print("error")
+        }
+    }
 }

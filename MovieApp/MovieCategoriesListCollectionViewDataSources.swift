@@ -7,10 +7,9 @@ class PopularCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let movie = MovieUseCase().popularMovies[indexPath.row]
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: movie.name, for: indexPath) as! MovieCategoriesViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: movie.name, for: indexPath) as! MovieCategoriesListViewCell
 
-        
-        cell.loadImage(url: URL(string: MovieUseCase().popularMovies[indexPath.row].imageUrl)!)
+        cell.setMovie(movie: movie)
         
         return cell
     }
@@ -26,10 +25,10 @@ class FreeCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let movie = MovieUseCase().freeToWatchMovies[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: movie.name, for: indexPath) as! MovieCategoriesViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: movie.name, for: indexPath) as! MovieCategoriesListViewCell
 
         
-        cell.loadImage(url: URL(string: MovieUseCase().freeToWatchMovies[indexPath.row].imageUrl)!)
+        cell.setMovie(movie: movie)
         
         return cell
     }
@@ -45,10 +44,10 @@ class TrendingCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let movie = MovieUseCase().trendingMovies[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: movie.name, for: indexPath) as! MovieCategoriesViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: movie.name, for: indexPath) as! MovieCategoriesListViewCell
 
         
-        cell.loadImage(url: URL(string: MovieUseCase().trendingMovies[indexPath.row].imageUrl)!)
+        cell.setMovie(movie: movie)
         
         return cell
     }

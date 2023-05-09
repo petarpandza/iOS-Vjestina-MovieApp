@@ -3,7 +3,7 @@ import UIKit
 import PureLayout
 import MovieAppData
 
-class MyCollectionViewCell: UICollectionViewCell {
+class MovieListViewCell: UICollectionViewCell {
     
     private var thumbnailImageView: UIImageView!
     private var titleLabel: UILabel!
@@ -76,15 +76,28 @@ class MyCollectionViewCell: UICollectionViewCell {
         
     }
     
-    public func loadImage(url: URL) {
+    public func setMovie(movie: MovieModel) {
+        var movieName = movie.name
+        movieName.append(" (")
+        movieName.append(String(MovieUseCase().getDetails(id: movie.id)!.year))
+        movieName.append(")")
+        setTitle(title: movieName)
+        
+        
+        setSubtitle(subtitle: movie.summary)
+        
+        loadImage(url: URL(string: movie.imageUrl)!)
+    }
+    
+    private func loadImage(url: URL) {
         thumbnailImageView.load(url: url)
     }
     
-    public func setTitle(title: String) {
+    private func setTitle(title: String) {
         titleLabel.attributedText = NSMutableAttributedString().bold(title, fontSize: 16)
     }
     
-    public func setSubtitle(subtitle: String) {
+    private func setSubtitle(subtitle: String) {
         subtitleLabel.attributedText = NSMutableAttributedString().normal(subtitle, fontSize: 14)
     }
     

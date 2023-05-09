@@ -1,10 +1,3 @@
-//
-//  LogInViewController.swift
-//  MovieApp
-//
-//  Created by Petar on 23.03.2023..
-//
-
 import Foundation
 import UIKit
 import PureLayout
