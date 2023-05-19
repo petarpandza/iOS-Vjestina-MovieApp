@@ -5,6 +5,10 @@ import MovieAppData
 
 class MovieListViewController: UIViewController {
     
+    private var coordinator: MovieListCoordinator!
+        
+    
+
     private var collectionView: UICollectionView!
     private var layout: UICollectionViewFlowLayout!
     private var movieDetails = MovieUseCase()
@@ -12,14 +16,17 @@ class MovieListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Movie List"
+        
         createViews()
         customizeViews()
         defineViewLayout()
-        
+        registerCollectionViews()
 
-        for movie in movieDetails.allMovies{
-            collectionView.register(MyCollectionViewCell.self, forCellWithReuseIdentifier: movie.name)
-        }
+    }
+    
+    public func setCoordinator(coordinator: MovieListCoordinator) {
+        self.coordinator = coordinator
     }
     
     private func createViews() {
@@ -40,7 +47,16 @@ class MovieListViewController: UIViewController {
         collectionView.autoPinEdgesToSuperviewEdges()
     }
     
+    private func registerCollectionViews() {
+        
+        collectionView.register(MovieListViewCell.self, forCellWithReuseIdentifier: "movieListCell")
+        
+    }
     
+    private func userDidSelect(movie: MovieModel) {
+        coordinator?.showMovieDetails(for: movie)
+    }
+
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
@@ -60,25 +76,23 @@ extension MovieListViewController: UICollectionViewDataSource, UICollectionViewD
     }
     
     func collectionView(_ tableView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "movieListCell", for: indexPath) as? MovieListViewCell else {
+                fatalError()
+                }
+        
         let movie = MovieUseCase().allMovies[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withReuseIdentifier: movie.name, for: indexPath) as! MyCollectionViewCell
         
-        var movieName = movie.name
-        movieName.append(" (")
-        movieName.append(String(MovieUseCase().getDetails(id: MovieUseCase().allMovies[indexPath.row].id)!.year))
-        movieName.append(")")
-        cell.setTitle(title: movieName)
-        
-        
-        cell.setSubtitle(subtitle: MovieUseCase().allMovies[indexPath.row].summary)
-        
-        cell.loadImage(url: URL(string: MovieUseCase().allMovies[indexPath.row].imageUrl)!)
+        cell.setMovie(movie: movie)
         
         return cell
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+
+        let movie = MovieUseCase().allMovies[indexPath.row]
+        userDidSelect(movie: movie)
+            
     }
 }
 

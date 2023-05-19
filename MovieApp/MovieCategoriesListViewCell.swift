@@ -3,10 +3,12 @@ import UIKit
 import PureLayout
 import MovieAppData
 
-class MovieCategoriesViewCell: UICollectionViewCell {
+class MovieCategoriesListViewCell: UICollectionViewCell {
+
     
     private var thumbnailImageView: UIImageView!
     private var favoriteButton: UIButton!
+    private var movie: MovieModel!
     
     override init (frame: CGRect) {
         super.init(frame: frame)
@@ -52,7 +54,12 @@ class MovieCategoriesViewCell: UICollectionViewCell {
         favoriteButton.autoSetDimension(.height, toSize: 30)
     }
     
-    public func loadImage(url: URL) {
+    func setMovie(movie: MovieModel) {
+        self.movie = movie
+        loadImage(url: URL(string: movie.imageUrl)!)
+    }
+    
+    private func loadImage(url: URL) {
         thumbnailImageView.load(url: url)
     }
     
