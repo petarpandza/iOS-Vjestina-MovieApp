@@ -11,19 +11,31 @@ class MovieDetailsCrewViewCell: UICollectionViewCell {
     override init (frame: CGRect) {
         super.init(frame: frame)
         
+        createViews()
+        customizeViews()
+        defineViewLayout()
+
+    }
+    
+    private func createViews() {
         nameLabel = UILabel()
+        roleLabel = UILabel()
+        
+        contentView.addSubview(nameLabel)
+        contentView.addSubview(roleLabel)
+    }
+    
+    private func customizeViews() {
         nameLabel.textColor = .black
         nameLabel.textAlignment = .left
         nameLabel.adjustsFontSizeToFitWidth = true
         
-        roleLabel = UILabel()
         roleLabel.textColor = .black
         roleLabel.textAlignment = .left
         roleLabel.adjustsFontSizeToFitWidth = true
-        
-        contentView.addSubview(nameLabel)
-        contentView.addSubview(roleLabel)
-        
+    }
+    
+    private func defineViewLayout() {
         nameLabel.autoPinEdge(.top, to: .top, of: contentView)
         nameLabel.autoPinEdge(.leading, to: .leading, of: contentView)
         nameLabel.autoPinEdge(.trailing, to: .trailing, of: contentView)
@@ -31,8 +43,6 @@ class MovieDetailsCrewViewCell: UICollectionViewCell {
         roleLabel.autoPinEdge(.top, to: .bottom, of: nameLabel)
         roleLabel.autoPinEdge(.leading, to: .leading, of: contentView)
         roleLabel.autoPinEdge(.trailing, to: .trailing, of: contentView)
-
-
     }
     
     public func setCrew(crewMember: MovieCrewMemberModel) {

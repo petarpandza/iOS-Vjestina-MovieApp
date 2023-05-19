@@ -26,10 +26,6 @@ class MovieCategoriesListViewController: UIViewController {
     private var trendingLabel: UILabel!
     
     var coordinator: MovieListCoordinator!
-        
-    func userDidSelect(movie: MovieModel) {
-        coordinator.showMovieDetails(for: movie)
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -159,19 +155,16 @@ class MovieCategoriesListViewController: UIViewController {
     
     private func registerCollectionViews() {
 
-        for popularMovie in movieDetails.popularMovies{
-            popularCollectionView.register(MovieCategoriesListViewCell.self, forCellWithReuseIdentifier: popularMovie.name)
-        }
- 
+        popularCollectionView.register(MovieCategoriesListViewCell.self, forCellWithReuseIdentifier: "popular")
         
-        for freeMovie in movieDetails.freeToWatchMovies{
-            freeCollectionView.register(MovieCategoriesListViewCell.self, forCellWithReuseIdentifier: freeMovie.name)
-        }
+        freeCollectionView.register(MovieCategoriesListViewCell.self, forCellWithReuseIdentifier: "free")
         
-        for trendingMovie in movieDetails.trendingMovies{
-            trendingCollectionView.register(MovieCategoriesListViewCell.self, forCellWithReuseIdentifier: trendingMovie.name)
-        }
+        trendingCollectionView.register(MovieCategoriesListViewCell.self, forCellWithReuseIdentifier: "trending")
         
+    }
+    
+    private func userDidSelect(movie: MovieModel) {
+        coordinator.showMovieDetails(for: movie)
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

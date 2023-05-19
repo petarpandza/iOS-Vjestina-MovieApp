@@ -10,7 +10,7 @@ protocol MovieListCoordinatorProtocol {
 
 class MovieListCoordinator: MovieListCoordinatorProtocol {
     
-    private weak var navigationController: UINavigationController?
+    private var navigationController: UINavigationController
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -18,7 +18,7 @@ class MovieListCoordinator: MovieListCoordinatorProtocol {
     
     func showMovieDetails(for movie: MovieModel) {
         let movieDetailsVC = MovieDetailsViewController(movie: movie)
-        navigationController?.pushViewController(movieDetailsVC, animated: true)
+        navigationController.pushViewController(movieDetailsVC, animated: true)
         
     }
 }

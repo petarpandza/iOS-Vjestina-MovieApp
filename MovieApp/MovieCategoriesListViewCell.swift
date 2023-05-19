@@ -54,12 +54,12 @@ class MovieCategoriesListViewCell: UICollectionViewCell {
         favoriteButton.autoSetDimension(.height, toSize: 30)
     }
     
-    public func setMovie(movie: MovieModel) {
+    func setMovie(movie: MovieModel) {
         self.movie = movie
         loadImage(url: URL(string: movie.imageUrl)!)
     }
     
-    public func loadImage(url: URL) {
+    private func loadImage(url: URL) {
         thumbnailImageView.load(url: url)
     }
     

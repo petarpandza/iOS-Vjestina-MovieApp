@@ -5,15 +5,12 @@ import MovieAppData
 
 class FavoritesViewController: UIViewController {
     
-    var coordinator: MovieListCoordinator?
+    var coordinator: MovieListCoordinator!
         
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
-        self.parent?.title = "favorites 2"
-        self.title = "favorites"
-        
+
         createViews()
         customizeViews()
         defineViewLayout()

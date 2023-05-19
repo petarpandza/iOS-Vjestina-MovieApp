@@ -5,10 +5,13 @@ import MovieAppData
 class PopularCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "popular", for: indexPath) as? MovieCategoriesListViewCell else {
+                fatalError()
+                }
+        
         let movie = MovieUseCase().popularMovies[indexPath.row]
-
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: movie.name, for: indexPath) as! MovieCategoriesListViewCell
-
+        
         cell.setMovie(movie: movie)
         
         return cell
@@ -24,9 +27,12 @@ class PopularCollectionViewDataSource: NSObject, UICollectionViewDataSource {
 class FreeCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "free", for: indexPath) as? MovieCategoriesListViewCell else {
+                fatalError()
+                }
+        
         let movie = MovieUseCase().freeToWatchMovies[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: movie.name, for: indexPath) as! MovieCategoriesListViewCell
-
         
         cell.setMovie(movie: movie)
         
@@ -43,9 +49,12 @@ class FreeCollectionViewDataSource: NSObject, UICollectionViewDataSource {
 class TrendingCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let movie = MovieUseCase().trendingMovies[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: movie.name, for: indexPath) as! MovieCategoriesListViewCell
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trending", for: indexPath) as? MovieCategoriesListViewCell else {
+                fatalError()
+                }
 
+        let movie = MovieUseCase().trendingMovies[indexPath.row]
         
         cell.setMovie(movie: movie)
         

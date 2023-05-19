@@ -3,10 +3,10 @@ import MovieAppData
 
 class TabViewController: UITabBarController {
     
-    private var coordinator: MovieListCoordinator?
+    private var coordinator: MovieListCoordinator!
         
     func userDidSelect(movie: MovieModel) {
-        coordinator?.showMovieDetails(for: movie)
+        coordinator.showMovieDetails(for: movie)
     }
 
     override func viewDidLoad() {

@@ -5,7 +5,7 @@ import MovieAppData
 
 class MovieListViewController: UIViewController {
     
-    private var coordinator: MovieListCoordinator?
+    private var coordinator: MovieListCoordinator!
         
     
 
@@ -21,11 +21,8 @@ class MovieListViewController: UIViewController {
         createViews()
         customizeViews()
         defineViewLayout()
-        
+        registerCollectionViews()
 
-        for movie in movieDetails.allMovies{
-            collectionView.register(MovieListViewCell.self, forCellWithReuseIdentifier: movie.name)
-        }
     }
     
     public func setCoordinator(coordinator: MovieListCoordinator) {
@@ -48,6 +45,12 @@ class MovieListViewController: UIViewController {
     
     private func defineViewLayout() {
         collectionView.autoPinEdgesToSuperviewEdges()
+    }
+    
+    private func registerCollectionViews() {
+        
+        collectionView.register(MovieListViewCell.self, forCellWithReuseIdentifier: "movieListCell")
+        
     }
     
     private func userDidSelect(movie: MovieModel) {
@@ -73,9 +76,12 @@ extension MovieListViewController: UICollectionViewDataSource, UICollectionViewD
     }
     
     func collectionView(_ tableView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let movie = MovieUseCase().allMovies[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withReuseIdentifier: movie.name, for: indexPath) as! MovieListViewCell
         
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "movieListCell", for: indexPath) as? MovieListViewCell else {
+                fatalError()
+                }
+        
+        let movie = MovieUseCase().allMovies[indexPath.row]
         
         cell.setMovie(movie: movie)
         

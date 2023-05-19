@@ -114,9 +114,9 @@ class MovieDetailsViewController: UIViewController {
         crewView.alpha = 0
         crewView.delegate = self
         crewView.dataSource = self
-        for crewMember in MovieUseCase().getDetails(id: movie.id)!.crewMembers {
-            crewView.register(MovieDetailsCrewViewCell.self, forCellWithReuseIdentifier: crewMember.name)
-        }
+        
+        crewView.register(MovieDetailsCrewViewCell.self, forCellWithReuseIdentifier: "crew")
+        
         view.addSubview(crewView)
         
         userScoreLabel.alpha = 0
@@ -244,9 +244,12 @@ extension MovieDetailsViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "crew", for: indexPath) as? MovieDetailsCrewViewCell else {
+                fatalError()
+                }
+        
         let crewMember = MovieUseCase().getDetails(id: movie.id)?.crewMembers[indexPath.row]
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: crewMember!.name, for: indexPath) as! MovieDetailsCrewViewCell
         cell.setCrew(crewMember: crewMember!)
         
         return cell
