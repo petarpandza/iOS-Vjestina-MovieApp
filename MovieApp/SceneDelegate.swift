@@ -4,14 +4,17 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    private var movieUseCase: MovieUseCase!
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
         
         window = UIWindow(windowScene: windowScene)
-        //let vc = TabViewController()
-        let vc = MovieListViewController()
+        movieUseCase = MovieUseCase()
+        let vc = TabViewController(viewModel: MovieCategoriesListViewModel(movieUseCase: movieUseCase))
+        //let vc = MovieListViewController(viewModel: MovieListViewModel(movieUseCase: movieUseCase))
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.navigationBar.backgroundColor = .white
 

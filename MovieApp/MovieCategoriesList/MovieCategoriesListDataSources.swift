@@ -1,16 +1,28 @@
 import Foundation
 import UIKit
-import MovieAppData
 
 class PopularCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
+    private var movies: [Movie]
+    
+    init(movies: [Movie]) {
+        self.movies = movies
+    }
+    
+    func updateData(movies: [Movie]) {
+        self.movies = movies
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "popular", for: indexPath) as? MovieCategoriesListViewCell else {
-                fatalError()
-                }
+            fatalError("Unable to dequeue popular cell")
+        }
+
+        guard !movies.isEmpty else {
+            return cell
+        }
         
-        let movie = MovieUseCase().popularMovies[indexPath.row]
+        let movie = movies[indexPath.row]
         
         cell.setMovie(movie: movie)
         
@@ -19,20 +31,32 @@ class PopularCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return MovieUseCase().popularMovies.count
+        return movies.count
     }
-    
 }
 
 class FreeCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
+    private var movies: [Movie]
+    
+    init(movies: [Movie]) {
+        self.movies = movies
+    }
+    
+    func updateData(movies: [Movie]) {
+        self.movies = movies
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "free", for: indexPath) as? MovieCategoriesListViewCell else {
-                fatalError()
-                }
+            fatalError("Unable to dequeue free cell")
+        }
+
+        guard !movies.isEmpty else {
+            return cell
+        }
         
-        let movie = MovieUseCase().freeToWatchMovies[indexPath.row]
+        let movie = movies[indexPath.row]
         
         cell.setMovie(movie: movie)
         
@@ -41,29 +65,39 @@ class FreeCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return MovieUseCase().freeToWatchMovies.count
+        return movies.count
     }
-    
 }
 
 class TrendingCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
+    private var movies: [Movie]
+    
+    init(movies: [Movie]) {
+        self.movies = movies
+    }
+    
+    func updateData(movies: [Movie]) {
+        self.movies = movies
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trending", for: indexPath) as? MovieCategoriesListViewCell else {
-                fatalError()
-                }
+            fatalError("Unable to dequeue trending cell")
+        }
 
-        let movie = MovieUseCase().trendingMovies[indexPath.row]
+        guard !movies.isEmpty else {
+            return cell
+        }
+        
+        let movie = movies[indexPath.row]
         
         cell.setMovie(movie: movie)
         
         return cell
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return MovieUseCase().trendingMovies.count
+        return movies.count
     }
-    
 }

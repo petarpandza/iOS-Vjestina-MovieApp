@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import PureLayout
-import MovieAppData
 
 class MovieDetailsCrewViewCell: UICollectionViewCell {
     
@@ -45,7 +44,7 @@ class MovieDetailsCrewViewCell: UICollectionViewCell {
         roleLabel.autoPinEdge(.trailing, to: .trailing, of: contentView)
     }
     
-    public func setCrew(crewMember: MovieCrewMemberModel) {
+    public func setCrew(crewMember: MovieCrewMember) {
         nameLabel.attributedText = NSMutableAttributedString().bold(crewMember.name, fontSize: 18)
         roleLabel.attributedText = NSMutableAttributedString().normal(crewMember.role, fontSize: 18)
     }

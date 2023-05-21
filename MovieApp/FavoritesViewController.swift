@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import PureLayout
-import MovieAppData
 
 class FavoritesViewController: UIViewController {
     
@@ -21,7 +20,7 @@ class FavoritesViewController: UIViewController {
         self.parent?.title = "Favorites"
     }
     
-    private func userDidSelect(movie: MovieModel) {
+    private func userDidSelect(movie: Movie) {
         coordinator?.showMovieDetails(for: movie)
     }
     

@@ -1,11 +1,11 @@
 import Foundation
 import UIKit
 import PureLayout
-import MovieAppData
+import Combine
 
 class MovieCategoriesListViewController: UIViewController {
     
-    var mainScrollView: UIScrollView!
+    private var mainScrollView: UIScrollView!
     
     private var popularCollectionView: UICollectionView!
     private var freeCollectionView: UICollectionView!
@@ -15,7 +15,13 @@ class MovieCategoriesListViewController: UIViewController {
     private var freeLayout: UICollectionViewFlowLayout!
     private var trendingLayout: UICollectionViewFlowLayout!
     
-    private var movieDetails = MovieUseCase()
+    
+    private var viewModel: MovieCategoriesListViewModel!
+    private var disposables = Set<AnyCancellable>()
+    private var popularMovies: [Movie] = []
+    private var freeToWatchMovies: [Movie] = []
+    private var trendingMovies: [Movie] = []
+    
     
     private var popularCollectionViewDataSource: PopularCollectionViewDataSource!
     private var freeCollectionViewDataSource: FreeCollectionViewDataSource!
@@ -27,6 +33,16 @@ class MovieCategoriesListViewController: UIViewController {
     
     var coordinator: MovieListCoordinator!
     
+    init(viewModel: MovieCategoriesListViewModel) {
+        self.viewModel = viewModel
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,7 +50,7 @@ class MovieCategoriesListViewController: UIViewController {
         customizeViews()
         defineViewLayout()
         registerCollectionViews()
-        
+        bindData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -42,9 +58,7 @@ class MovieCategoriesListViewController: UIViewController {
     }
     
     private func createViews() {
-        
         mainScrollView = UIScrollView()
-        
         
         popularLayout = UICollectionViewFlowLayout()
         freeLayout = UICollectionViewFlowLayout()
@@ -69,9 +83,9 @@ class MovieCategoriesListViewController: UIViewController {
         freeCollectionView = UICollectionView(frame: .zero, collectionViewLayout: freeLayout)
         trendingCollectionView = UICollectionView(frame: .zero, collectionViewLayout: trendingLayout)
         
-        popularCollectionViewDataSource = PopularCollectionViewDataSource()
-        freeCollectionViewDataSource = FreeCollectionViewDataSource()
-        trendingCollectionViewDataSource = TrendingCollectionViewDataSource()
+        popularCollectionViewDataSource = PopularCollectionViewDataSource(movies: popularMovies)
+        freeCollectionViewDataSource = FreeCollectionViewDataSource(movies: freeToWatchMovies)
+        trendingCollectionViewDataSource = TrendingCollectionViewDataSource(movies: trendingMovies)
         
         whatsPopularLabel = UILabel()
         freeToWatchLabel = UILabel()
@@ -110,8 +124,6 @@ class MovieCategoriesListViewController: UIViewController {
         trendingCollectionView.delegate = self
         trendingCollectionView.dataSource = trendingCollectionViewDataSource
         trendingCollectionView.tag = 3
-        
-        
     }
     
     private func defineViewLayout() {
@@ -148,9 +160,7 @@ class MovieCategoriesListViewController: UIViewController {
         trendingCollectionView.autoSetDimension(.height, toSize: 220)
         trendingCollectionView.autoPinEdge(.trailing, to: .trailing, of: view)
         
-        // TODO
-        mainScrollView.contentSize = CGSize(width: view.bounds.width, height: trendingCollectionView.frame.maxY + 20)
-        
+        mainScrollView.contentSize = CGSize(width: view.bounds.width, height: 0.9*view.bounds.height)
     }
     
     private func registerCollectionViews() {
@@ -163,16 +173,51 @@ class MovieCategoriesListViewController: UIViewController {
         
     }
     
-    private func userDidSelect(movie: MovieModel) {
-        coordinator.showMovieDetails(for: movie)
+    private func bindData() {
+        self.popularMovies = viewModel.popularMoviesPublished
+        self.freeToWatchMovies = viewModel.freeMoviesPublished
+        self.trendingMovies = viewModel.trendingMoviesPublished
+
+        
+        viewModel
+            .$popularMoviesPublished
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] movies in
+                guard let self else { return }
+                
+                self.popularMovies = movies
+                self.popularCollectionViewDataSource.updateData(movies: movies)
+                self.popularCollectionView.reloadData()
+            }
+            .store(in: &disposables)
+        
+        viewModel
+            .$freeMoviesPublished
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] movies in
+                guard let self else { return }
+                
+                self.freeToWatchMovies = movies
+                self.freeCollectionViewDataSource.updateData(movies: movies)
+                self.freeCollectionView.reloadData()
+            }
+            .store(in: &disposables)
+        
+        viewModel
+            .$trendingMoviesPublished
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] movies in
+                guard let self else { return }
+                
+                self.trendingMovies = movies
+                self.trendingCollectionViewDataSource.updateData(movies: movies)
+                self.trendingCollectionView.reloadData()
+            }
+            .store(in: &disposables)
     }
     
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
-    }
-
-    override var shouldAutorotate: Bool {
-        return true
+    private func userDidSelect(movie: Movie) {
+        coordinator.showMovieDetails(for: movie)
     }
     
 }
@@ -184,13 +229,13 @@ extension MovieCategoriesListViewController: UICollectionViewDelegate {
         switch collectionView.tag {
             
         case 1:
-            let movie = MovieUseCase().popularMovies[indexPath.row]
+            let movie = popularMovies[indexPath.row]
             userDidSelect(movie: movie)
         case 2:
-            let movie = MovieUseCase().freeToWatchMovies[indexPath.row]
+            let movie = freeToWatchMovies[indexPath.row]
             userDidSelect(movie: movie)
         case 3:
-            let movie = MovieUseCase().trendingMovies[indexPath.row]
+            let movie = trendingMovies[indexPath.row]
             userDidSelect(movie: movie)
         default:
             print("error")

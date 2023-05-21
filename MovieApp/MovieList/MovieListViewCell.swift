@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import PureLayout
-import MovieAppData
 
 class MovieListViewCell: UICollectionViewCell {
     
@@ -76,18 +75,28 @@ class MovieListViewCell: UICollectionViewCell {
         
     }
     
-    public func setMovie(movie: MovieModel) {
+    public func setMovie(movie: Movie) {
         var movieName = movie.name
         movieName.append(" (")
-        movieName.append(String(MovieUseCase().getDetails(id: movie.id)!.year))
+        movieName.append("----")
         movieName.append(")")
         setTitle(title: movieName)
         
+        Task {
+            let movieUseCase = MovieUseCase()
+            let details = await movieUseCase.getDetails(forId: movie.id)
+            var movieName = movie.name
+            movieName.append(" (")
+            movieName.append(String(details.year))
+            movieName.append(")")
+            setTitle(title: movieName)
+        }
         
         setSubtitle(subtitle: movie.summary)
         
         loadImage(url: URL(string: movie.imageUrl)!)
     }
+
     
     private func loadImage(url: URL) {
         thumbnailImageView.load(url: url)

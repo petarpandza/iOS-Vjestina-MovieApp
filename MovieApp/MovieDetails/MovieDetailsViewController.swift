@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 import PureLayout
-import MovieAppData
+import Combine
 
 class MovieDetailsViewController: UIViewController {
     
@@ -16,25 +16,30 @@ class MovieDetailsViewController: UIViewController {
     private var summaryLabel: UILabel!
     private var crewView: UICollectionView!
     
+    private var dataSource: MovieDetailsDataSource!
+    
+    private var viewModel: MovieDetailsViewModel!
+    private var disposables = Set<AnyCancellable>()
     
     private var screenHeight: CGFloat!
     private var screenWidth: CGFloat!
-    private var movie: MovieModel!
     
-    convenience init(movie: MovieModel!) {
+    private var movie: Movie!
+    private var movieDetails: MovieDetails!
+    
+    convenience init(movie: Movie) {
         self.init()
+        self.viewModel = MovieDetailsViewModel(movie: movie)
         self.movie = movie
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Movie Details"
-        
         createViews()
         customizeViews()
         defineViewLayout()
-
+        bindData()
         
     }
     
@@ -48,7 +53,6 @@ class MovieDetailsViewController: UIViewController {
         screenHeight = view.frame.height
         screenWidth = view.frame.width
         
-        
         movieImageView = UIImageView()
         userScoreLabel = UILabel()
         movieTitleLabel = UILabel()
@@ -57,6 +61,8 @@ class MovieDetailsViewController: UIViewController {
         favoriteButton = UIButton()
         overviewLabel = UILabel()
         summaryLabel = UILabel()
+        
+        dataSource = MovieDetailsDataSource(crew: [])
         
         let crewViewLayout = UICollectionViewFlowLayout()
         crewViewLayout.itemSize = CGSize(width: screenWidth*0.26, height: 40)
@@ -71,26 +77,27 @@ class MovieDetailsViewController: UIViewController {
     private func customizeViews() {
         
         view.backgroundColor = .white
+        title = "Movie Details"
         
         movieImageView.load(url: URL(string: movie.imageUrl)!)
         movieImageView.contentMode = .scaleAspectFill
         movieImageView.clipsToBounds = true
         view.addSubview(movieImageView)
         
-        userScoreLabel.attributedText = NSMutableAttributedString().bold(String(format: "%.1f", arguments: [MovieUseCase().getDetails(id: movie.id)!.rating]), fontSize: 20).normal(" User Score", fontSize: 16)
+        userScoreLabel.attributedText = NSMutableAttributedString().bold(String(format: "%.1f", arguments: [movieDetails?.rating ?? 0]), fontSize: 20).normal(" User Score", fontSize: 16)
         userScoreLabel.textColor = .white
         view.addSubview(userScoreLabel)
         
-        movieTitleLabel.attributedText = NSMutableAttributedString().bold(movie.name, fontSize: 30).normal(String(format: " (%d)", arguments: [MovieUseCase().getDetails(id: movie.id)!.year]), fontSize: 30)
+        movieTitleLabel.attributedText = NSMutableAttributedString().bold(movie.name, fontSize: 30).normal(String(format: " (%d)", arguments: [movieDetails?.year ?? 0]), fontSize: 30)
         movieTitleLabel.textColor = .white
         movieTitleLabel.adjustsFontSizeToFitWidth = true
         view.addSubview(movieTitleLabel)
         
-        releaseDateLabel.attributedText = NSMutableAttributedString().normal(MovieUseCase().getDetails(id: movie.id)!.releaseDate, fontSize: 15)
+        releaseDateLabel.attributedText = NSMutableAttributedString().normal(movieDetails?.releaseDate ?? "-", fontSize: 15)
         releaseDateLabel.textColor = .white
         view.addSubview(releaseDateLabel)
         
-        genreLabel.attributedText = NSMutableAttributedString().normal(categoriesToString(categories: MovieUseCase().getDetails(id: movie.id)!.categories), fontSize: 15).bold(lengthIntToString(length: MovieUseCase().getDetails(id: movie.id)!.duration), fontSize: 15)
+        genreLabel.attributedText = NSMutableAttributedString().normal(categoriesToString(categories: movieDetails?.categories ?? []), fontSize: 15).bold(lengthIntToString(length: movieDetails?.duration ?? 0), fontSize: 15)
         genreLabel.textColor = .white
         view.addSubview(genreLabel)
         
@@ -113,9 +120,9 @@ class MovieDetailsViewController: UIViewController {
         
         crewView.alpha = 0
         crewView.delegate = self
-        crewView.dataSource = self
+        crewView.dataSource = dataSource
         
-        crewView.register(MovieDetailsCrewViewCell.self, forCellWithReuseIdentifier: "crew")
+        crewView.register(MovieDetailsCrewViewCell.self, forCellWithReuseIdentifier: "crewCell")
         
         view.addSubview(crewView)
         
@@ -166,9 +173,6 @@ class MovieDetailsViewController: UIViewController {
         crewView.autoPinEdge(.leading, to: .leading, of: view)
         crewView.autoPinEdge(.trailing, to: .trailing, of: view)
         crewView.autoPinEdge(.bottom, to: .bottom, of: view)
-        
-        
-        
     }
     
     private func animateViews() {
@@ -200,6 +204,30 @@ class MovieDetailsViewController: UIViewController {
         
     }
     
+    private func bindData() {
+        
+        viewModel
+            .$movieDetails
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] movie in
+                guard let self else { return }
+                
+                self.movieDetails = movie
+                self.dataSource.updateData(crew: movie?.crewMembers ?? [])
+                self.crewView.reloadData()
+                self.reloadViews()
+            }
+            .store(in: &disposables)
+    }
+    
+    func reloadViews() {
+        userScoreLabel.attributedText = NSMutableAttributedString().bold(String(format: "%.1f", arguments: [movieDetails.rating]), fontSize: 20).normal(" User Score", fontSize: 16)
+        releaseDateLabel.attributedText = NSMutableAttributedString().normal(movieDetails.releaseDate, fontSize: 15)
+        genreLabel.attributedText = NSMutableAttributedString().normal(categoriesToString(categories: movieDetails.categories), fontSize: 15).bold(lengthIntToString(length: movieDetails.duration), fontSize: 15)
+        movieTitleLabel.attributedText = NSMutableAttributedString().bold(movie.name, fontSize: 30).normal(String(format: " (%d)", arguments: [movieDetails.year]), fontSize: 30)
+        
+    }
+    
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
@@ -210,7 +238,7 @@ class MovieDetailsViewController: UIViewController {
     
 }
 
-private func categoriesToString(categories:[MovieCategoryModel]) -> String {
+private func categoriesToString(categories:[MovieCategory]) -> String {
     var s = String()
     
     if (categories.isEmpty) {
@@ -236,30 +264,10 @@ private func lengthIntToString(length: Int) -> String{
     return String(format: " %dh %dm", arguments: [hours, minutes])
 }
 
-extension MovieDetailsViewController: UICollectionViewDataSource {
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return MovieUseCase().getDetails(id: movie.id)?.crewMembers.count ?? 0
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "crew", for: indexPath) as? MovieDetailsCrewViewCell else {
-                fatalError()
-                }
-        
-        let crewMember = MovieUseCase().getDetails(id: movie.id)?.crewMembers[indexPath.row]
-        
-        cell.setCrew(crewMember: crewMember!)
-        
-        return cell
-    }
-}
-
 extension MovieDetailsViewController: UICollectionViewDelegate {
 }
 
-extension MovieCategoryModel {
+extension MovieCategory {
     var category: String {
         switch self {
         case .action: return "Action"

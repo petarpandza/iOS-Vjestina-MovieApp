@@ -1,10 +1,9 @@
 import Foundation
 import UIKit
-import MovieAppData
 
 protocol MovieListCoordinatorProtocol {
     
-    func showMovieDetails(for movie: MovieModel)
+    func showMovieDetails(for movie: Movie)
     
 }
 
@@ -16,7 +15,7 @@ class MovieListCoordinator: MovieListCoordinatorProtocol {
         self.navigationController = navigationController
     }
     
-    func showMovieDetails(for movie: MovieModel) {
+    func showMovieDetails(for movie: Movie) {
         let movieDetailsVC = MovieDetailsViewController(movie: movie)
         navigationController.pushViewController(movieDetailsVC, animated: true)
         
