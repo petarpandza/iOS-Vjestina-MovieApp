@@ -8,12 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		D23DF8552A0454DC00141D19 /* MovieCategoriesListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23DF8542A0454DC00141D19 /* MovieCategoriesListViewCell.swift */; };
-		D23DF8572A04573D00141D19 /* MovieCategoriesListDataSources.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23DF8562A04573D00141D19 /* MovieCategoriesListDataSources.swift */; };
+		D23DF8572A04573D00141D19 /* MovieCategoriesListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23DF8562A04573D00141D19 /* MovieCategoriesListDataSource.swift */; };
 		D23DF8592A045DFB00141D19 /* MovieListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23DF8582A045DFB00141D19 /* MovieListViewCell.swift */; };
 		D23DF85B2A0548A700141D19 /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23DF85A2A0548A700141D19 /* FavoritesViewController.swift */; };
 		D23DF85D2A05550D00141D19 /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23DF85C2A05550D00141D19 /* TabViewController.swift */; };
 		D23DF85F2A05644700141D19 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23DF85E2A05644700141D19 /* Router.swift */; };
 		D23DF8872A083ED500141D19 /* MovieDetailsCrewViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23DF8862A083ED500141D19 /* MovieDetailsCrewViewCell.swift */; };
+		D25F43822A2120C4003FA154 /* MovieCategoriesListCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25F43812A2120C4003FA154 /* MovieCategoriesListCollectionViewLayout.swift */; };
 		D2847C4329D831DE0051A32D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2847C4229D831DE0051A32D /* LoginViewController.swift */; };
 		D2847C4529D8DCBC0051A32D /* MovieDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2847C4429D8DCBC0051A32D /* MovieDetailsViewController.swift */; };
 		D2A88CC72A17A4E6000077B6 /* MovieCategoriesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2A88CC62A17A4E6000077B6 /* MovieCategoriesListViewModel.swift */; };
@@ -35,12 +36,13 @@
 
 /* Begin PBXFileReference section */
 		D23DF8542A0454DC00141D19 /* MovieCategoriesListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCategoriesListViewCell.swift; sourceTree = "<group>"; };
-		D23DF8562A04573D00141D19 /* MovieCategoriesListDataSources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCategoriesListDataSources.swift; sourceTree = "<group>"; };
+		D23DF8562A04573D00141D19 /* MovieCategoriesListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCategoriesListDataSource.swift; sourceTree = "<group>"; };
 		D23DF8582A045DFB00141D19 /* MovieListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListViewCell.swift; sourceTree = "<group>"; };
 		D23DF85A2A0548A700141D19 /* FavoritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
 		D23DF85C2A05550D00141D19 /* TabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewController.swift; sourceTree = "<group>"; };
 		D23DF85E2A05644700141D19 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		D23DF8862A083ED500141D19 /* MovieDetailsCrewViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsCrewViewCell.swift; sourceTree = "<group>"; };
+		D25F43812A2120C4003FA154 /* MovieCategoriesListCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCategoriesListCollectionViewLayout.swift; sourceTree = "<group>"; };
 		D2847C4229D831DE0051A32D /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		D2847C4429D8DCBC0051A32D /* MovieDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsViewController.swift; sourceTree = "<group>"; };
 		D2A88CC62A17A4E6000077B6 /* MovieCategoriesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCategoriesListViewModel.swift; sourceTree = "<group>"; };
@@ -78,8 +80,9 @@
 			children = (
 				D2FA75F629E5ABDE0091D88C /* MovieCategoriesListViewController.swift */,
 				D2A88CC62A17A4E6000077B6 /* MovieCategoriesListViewModel.swift */,
-				D23DF8562A04573D00141D19 /* MovieCategoriesListDataSources.swift */,
+				D23DF8562A04573D00141D19 /* MovieCategoriesListDataSource.swift */,
 				D23DF8542A0454DC00141D19 /* MovieCategoriesListViewCell.swift */,
+				D25F43812A2120C4003FA154 /* MovieCategoriesListCollectionViewLayout.swift */,
 			);
 			path = MovieCategoriesList;
 			sourceTree = "<group>";
@@ -232,13 +235,14 @@
 				D2A88CD62A19130F000077B6 /* MovieDetailsViewModel.swift in Sources */,
 				D23DF85F2A05644700141D19 /* Router.swift in Sources */,
 				D2847C4329D831DE0051A32D /* LoginViewController.swift in Sources */,
-				D23DF8572A04573D00141D19 /* MovieCategoriesListDataSources.swift in Sources */,
+				D23DF8572A04573D00141D19 /* MovieCategoriesListDataSource.swift in Sources */,
 				D23DF85D2A05550D00141D19 /* TabViewController.swift in Sources */,
 				D2A88CD32A1910B9000077B6 /* MovieListDataSource.swift in Sources */,
 				D2D94E6329CCE197006039D4 /* AppDelegate.swift in Sources */,
 				D2D94E6529CCE197006039D4 /* SceneDelegate.swift in Sources */,
 				D23DF85B2A0548A700141D19 /* FavoritesViewController.swift in Sources */,
 				D2FA75F729E5ABDE0091D88C /* MovieCategoriesListViewController.swift in Sources */,
+				D25F43822A2120C4003FA154 /* MovieCategoriesListCollectionViewLayout.swift in Sources */,
 				D2A88CCE2A17C7ED000077B6 /* Movie.swift in Sources */,
 				D2A88CCC2A17C7BB000077B6 /* MovieUseCase.swift in Sources */,
 			);
