@@ -17,7 +17,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //let vc = MovieListViewController(viewModel: MovieListViewModel(movieUseCase: movieUseCase))
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.navigationBar.backgroundColor = .white
-
         let coordinator = MovieListCoordinator(navigationController: navigationController)
         vc.setCoordinator(coordinator: coordinator)
         window?.rootViewController = navigationController

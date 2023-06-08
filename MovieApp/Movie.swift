@@ -1,4 +1,4 @@
-public struct Movie: Decodable, Hashable {
+public struct Movie: Codable, Hashable {
 
     public let id: Int
     public let name: String
@@ -7,7 +7,7 @@ public struct Movie: Decodable, Hashable {
 
 }
 
-public struct MovieDetails: Decodable, Equatable, Hashable {
+public struct MovieDetails: Codable, Equatable, Hashable {
     
     public let categories: [MovieCategory]
     public let crewMembers: [MovieCrewMember]
@@ -22,14 +22,14 @@ public struct MovieDetails: Decodable, Equatable, Hashable {
     
 }
 
-public struct MovieCrewMember: Decodable, Equatable, Hashable {
+public struct MovieCrewMember: Codable, Equatable, Hashable {
 
     public let name: String
     public let role: String
 
 }
 
-public enum MovieCategory: String, Decodable, Equatable, Hashable {
+public enum MovieCategory: String, Codable, Equatable, Hashable {
 
     case action = "ACTION"
     case adventure = "ADVENTURE"

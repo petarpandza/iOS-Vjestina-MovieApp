@@ -9,8 +9,12 @@ class MovieCategoriesListViewCell: UICollectionViewCell {
     private var favoriteButton: UIButton!
     private var movie: Movie!
     
+    private var userDefaults: UserDefaults!
+    
     override init (frame: CGRect) {
         super.init(frame: frame)
+        
+        userDefaults = UserDefaults.standard
 
         createViews()
         customizeViews()
@@ -38,10 +42,12 @@ class MovieCategoriesListViewCell: UICollectionViewCell {
         favoriteButton.layer.cornerRadius = 15
         favoriteButton.layer.opacity = 0.8
         
+        favoriteButton.addTarget(self, action: #selector(favoriteClicked(_:)), for: .touchUpInside)
         
-        let homeSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: 17, weight: .regular)
-        let favoriteImage = UIImage(systemName: "heart", withConfiguration: homeSymbolConfiguration)
+        let favoriteImage = UIImage(systemName: "heart", withConfiguration: .none)
+        let favoriteImageFilled = UIImage(systemName: "heart.fill", withConfiguration: .none)
         favoriteButton.setImage(favoriteImage, for: .normal)
+        favoriteButton.setImage(favoriteImageFilled, for: .selected)
 
         contentView.layer.cornerRadius = 12
     }
@@ -60,9 +66,69 @@ class MovieCategoriesListViewCell: UICollectionViewCell {
     func setMovie(movie: Movie) {
         self.movie = movie
         loadImage(url: URL(string: movie.imageUrl)!)
+        updateFavoriteButton()
     }
     
     private func loadImage(url: URL) {
         thumbnailImageView.load(url: url)
+    }
+    
+    private func updateFavoriteButton() {
+        let data = userDefaults.data(forKey: "favoriteMovies")
+        guard let data else {
+            favoriteButton.isSelected = false
+            return
+        }
+        do {
+            let movies = try JSONDecoder().decode([Movie].self, from: data)
+            if (movies.contains(movie)) {
+                favoriteButton.isSelected = true
+            } else {
+                favoriteButton.isSelected = false
+            }
+        } catch {
+            fatalError("movies decoding error")
+        }
+    }
+    
+    @objc func favoriteClicked(_ sender: UIButton) {
+        
+        let data = userDefaults.data(forKey: "favoriteMovies")
+        if (!sender.isSelected) {
+            guard let data else {
+                do {
+                    // No favorite movies, adding the first one
+                    let newData = try JSONEncoder().encode([movie])
+                    userDefaults.set(newData, forKey: "favoriteMovies")
+                } catch {
+                    fatalError("missing movie")
+                }
+                return
+            }
+            do {
+                var movies = try JSONDecoder().decode([Movie].self, from: data)
+                movies.removeAll {$0.id == movie.id}
+                movies.append(movie)
+                let newData = try JSONEncoder().encode(movies)
+                userDefaults.set(newData, forKey: "favoriteMovies")
+            } catch {
+                fatalError("movie decoding/encoding error")
+            }
+        } else {
+            guard let data else {
+                // Tried removing a favorite movie, no favorite movies found
+                fatalError("tried removing nonexisting favorite movie")
+            }
+            do {
+                var movies = try JSONDecoder().decode([Movie].self, from: data)
+                movies.removeAll {$0.id == movie.id} // Remove movie from array
+                let newData = try JSONEncoder().encode(movies)
+                userDefaults.set(newData, forKey: "favoriteMovies")
+            } catch {
+                fatalError("movie decoding/encoding error")
+            }
+        }
+        
+        sender.isSelected = !sender.isSelected
     }
 }

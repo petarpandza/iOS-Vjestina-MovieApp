@@ -3,7 +3,6 @@ import Foundation
 class MovieListViewModel {
     
     @Published private(set) var allMoviesPublished: [Movie] = []
-    @Published private(set) var allMovieDetailsPublished: [MovieDetails] = []
     
     private let movieUseCase: MovieUseCaseProtocol
 
@@ -12,7 +11,6 @@ class MovieListViewModel {
         
         Task {
             allMoviesPublished = await movieUseCase.allMovies()
-            allMovieDetailsPublished = await movieUseCase.allMovieDetails()
         }
     }
     
