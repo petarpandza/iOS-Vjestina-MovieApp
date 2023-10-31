@@ -27,10 +27,13 @@ class MovieDetailsViewController: UIViewController {
     private var movie: Movie!
     private var movieDetails: MovieDetails!
     
+    private var userDefaults: UserDefaults!
+    
     convenience init(movie: Movie) {
         self.init()
         self.viewModel = MovieDetailsViewModel(movie: movie)
         self.movie = movie
+        userDefaults = UserDefaults.standard
     }
     
     override func viewDidLoad() {
@@ -103,10 +106,13 @@ class MovieDetailsViewController: UIViewController {
         
         favoriteButton.backgroundColor = .gray
         favoriteButton.layer.cornerRadius = 17.5
-        let homeSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: 17, weight: .regular)
-        let homeImage = UIImage(systemName: "star", withConfiguration: homeSymbolConfiguration)
-        favoriteButton.setImage(homeImage, for: .normal)
+        let favoriteImage = UIImage(systemName: "star", withConfiguration: .none)
+        let favoriteImageFilled = UIImage(systemName: "star.fill", withConfiguration: .none)
+        favoriteButton.setImage(favoriteImage, for: .normal)
+        favoriteButton.setImage(favoriteImageFilled, for: .selected)
         view.addSubview(favoriteButton)
+        favoriteButton.addTarget(self, action: #selector(favoriteClicked(_:)), for: .touchUpInside)
+        updateFavoriteButton()
         
         overviewLabel.attributedText = NSMutableAttributedString().bold("Overview", fontSize: 30)
         overviewLabel.textColor = .black
@@ -220,20 +226,70 @@ class MovieDetailsViewController: UIViewController {
             .store(in: &disposables)
     }
     
-    func reloadViews() {
+    private func updateFavoriteButton() {
+        let data = userDefaults.data(forKey: "favoriteMovies")
+        guard let data else {
+            favoriteButton.isSelected = false
+            return
+        }
+        do {
+            let movies = try JSONDecoder().decode([Movie].self, from: data)
+            if (movies.contains(movie)) {
+                favoriteButton.isSelected = true
+            } else {
+                favoriteButton.isSelected = false
+            }
+        } catch {
+            fatalError("movies decoding error")
+        }
+    }
+    
+    @objc func favoriteClicked(_ sender: UIButton) {
+        
+        let data = userDefaults.data(forKey: "favoriteMovies")
+        if (!sender.isSelected) {
+            guard let data else {
+                do {
+                    // No favorite movies, adding the first one
+                    let newData = try JSONEncoder().encode([movie])
+                    userDefaults.set(newData, forKey: "favoriteMovies")
+                } catch {
+                    fatalError("missing movie")
+                }
+                return
+            }
+            do {
+                var movies = try JSONDecoder().decode([Movie].self, from: data)
+                movies.append(movie)
+                let newData = try JSONEncoder().encode(movies)
+                userDefaults.set(newData, forKey: "favoriteMovies")
+            } catch {
+                fatalError("movie decoding/encoding error")
+            }
+        } else {
+            guard let data else {
+                // Tried removing a favorite movie, no favorite movies found
+                fatalError("tried removing nonexisting favorite movie")
+            }
+            do {
+                var movies = try JSONDecoder().decode([Movie].self, from: data)
+                movies.removeAll {$0.id == movie.id} // Remove movie from array
+                let newData = try JSONEncoder().encode(movies)
+                userDefaults.set(newData, forKey: "favoriteMovies")
+            } catch {
+                fatalError("movie decoding/encoding error")
+            }
+        }
+        
+        sender.isSelected = !sender.isSelected
+    }
+    
+    private func reloadViews() {
         userScoreLabel.attributedText = NSMutableAttributedString().bold(String(format: "%.1f", arguments: [movieDetails.rating]), fontSize: 20).normal(" User Score", fontSize: 16)
         releaseDateLabel.attributedText = NSMutableAttributedString().normal(movieDetails.releaseDate, fontSize: 15)
         genreLabel.attributedText = NSMutableAttributedString().normal(categoriesToString(categories: movieDetails.categories), fontSize: 15).bold(lengthIntToString(length: movieDetails.duration), fontSize: 15)
         movieTitleLabel.attributedText = NSMutableAttributedString().bold(movie.name, fontSize: 30).normal(String(format: " (%d)", arguments: [movieDetails.year]), fontSize: 30)
         
-    }
-    
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
-    }
-
-    override var shouldAutorotate: Bool {
-        return true
     }
     
 }
@@ -293,6 +349,11 @@ extension UIImageView {
                         self?.image = image
                     }
                 }
+            } else {
+                // Image not found on image URL
+                DispatchQueue.main.async {
+                    self?.image = UIImage(named: "Image Not Found")
+                }
             }
         }
     }
@@ -314,6 +375,18 @@ extension NSMutableAttributedString {
         
         let attributes:[NSAttributedString.Key : Any] = [
             .font : UIFont(name: "AvenirNext-Regular", size: size) ?? UIFont.systemFont(ofSize: size)
+        ]
+        
+        self.append(NSAttributedString(string: value, attributes:attributes))
+        return self
+    }
+    
+    func underlined(_ value:String, fontSize size: CGFloat) -> NSMutableAttributedString {
+        
+        let attributes:[NSAttributedString.Key : Any] = [
+            .font : UIFont(name: "AvenirNext-Bold", size: size) ?? UIFont.systemFont(ofSize: size),
+            .underlineColor : UIColor.black,
+            .underlineStyle : 3
         ]
         
         self.append(NSAttributedString(string: value, attributes:attributes))
